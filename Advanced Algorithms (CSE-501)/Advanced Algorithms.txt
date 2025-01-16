@@ -1,0 +1,244 @@
+Q1. Algorithm for DFS (Non-Recursive)
+
+DFS(graph, startVertex):
+1. Initialize the graph as an adjacency list or adjacency matrix.
+2. Create a stack data structure to store vertices to visit.
+3. Create a set or array to keep track of visited vertices.
+4. startVertex = 0
+5. Push the startVertex onto the stack and mark it as visited.
+6. While the stack is not empty:
+   a. get the top vertex from the stack and process it.
+   b. For each unvisited neighbor of the current vertex:
+      i. Push the neighbor onto the stack.
+      ii. Mark the neighbor as visited.
+   c. pop vertex from the stack and process it.
+7. The algorithm continues until the stack is empty, and all reachable vertices have been visited.
+
+
+
+Q2. Algorithm for BFS
+
+BFS(graph, startVertex):
+1. Initialize the graph as an adjacency list or adjacency matrix.
+2. Create a queue data structure to store vertices to visit.
+3. Create a set or array to keep track of visited vertices.
+4. startVertex = 0.
+5. Enqueue the startVertex into the queue and mark it as visited.
+6. While the queue is not empty:
+   a. Dequeue a vertex from the queue and process it.
+   b. For each unvisited neighbor of the current vertex:
+      i. Enqueue the neighbor into the queue.
+      ii. Mark the neighbor as visited.
+7. The algorithm continues until the queue is empty, and all reachable vertices have been visited.
+
+
+
+Q3. Algorithm to find the topological sorting of a given graph
+
+Topological-Sort(graph)
+1. Initialize an empty stack S to store the topological ordering.
+2. Initialize an array visited of length V (number of vertices) with all elements set to false.
+3. For each vertex v in graph:
+   a. If visited[v] is false:
+      i. Call DFS(graph, v, visited, S).
+4. Return the contents of stack S as the topological ordering.
+
+DFS(graph, u, visited, S)
+1. Mark visited[u] as true.
+2. For each neighbor v of u in graph:
+   a. If visited[v] is false:
+      i. Call DFS(graph, v, visited, S).
+3. Push u onto stack S.
+
+
+
+Q4. Algorithm to find all the strongly connected components
+
+1. Initialize the graph as a directed graph represented as an adjacency list.
+2. Call Kosaraju-SCC(graph).
+3. The result, SCCs, contains the strongly connected components in the graph.
+
+Kosaraju-SCC(graph)
+1. Initialize an empty stack S.
+2. Initialize an array visited of length V (number of vertices) with all elements set to false.
+3. For each vertex v in graph (in reverse topological order, if applicable):
+  a. If visited[v] is false:
+     i. Call DFS-1(graph, v, visited, S).
+4. Create a transpose graph (reverse the direction of all edges in the original graph).
+5. Initialize an array visited of length V with all elements set to false.
+6. Initialize an array representing SCCs.
+7. While stack S is not empty:
+  a. Pop a vertex v from S.
+  b. If visited[v] is false:
+      i. Call DFS-2(transpose graph, v, visited, SCCs, v).
+8. Return SCCs, which represents the strongly connected components in the graph.
+
+DFS-1(graph, u, visited, S)
+1. Mark visited[u] as true.
+2. For each neighbor v of u in graph:
+   a. If visited[v] is false:
+      i. Call DFS-1(graph, v, visited, S).
+3. Push u onto stack S.
+
+DFS-2(graph, u, visited, SCCs, root)
+1. Mark visited[u] as true.
+2. Add u to the current SCC.
+3. For each neighbor v of u in graph:
+   a. If visited[v] is false:
+      i. Call DFS-2(graph, v, visited, SCCs, root).
+
+
+
+Q5. Algorithm to check whether given graph is bipartite or not
+
+1. Initialize the graph as an adjacency list.
+2. Call Bipartite-DFS(graph).
+3. If the result is true, print "The graph is bipartite."
+4. If the result is false, print "The graph is not bipartite."
+
+Bipartite-DFS(graph)
+1. Initialize an array colors of length V (number of vertices) with all elements set to -1. (Represents uncolored nodes)
+2. For each vertex v in graph:
+   a. If colors[v] is -1:
+      i. If not Bipartite-DFS-Visit(graph, v, 0, colors):
+         return false (Graph is not bipartite)
+3. return true (Graph is bipartite)
+
+Bipartite-DFS-Visit(graph, node, currentColor, colors)
+1. Set colors[node] to currentColor.
+2. For each neighbor in graph[node]:
+   a. If colors[neighbor] is -1:
+      i. If not Bipartite-DFS-Visit(graph, neighbor, 1 - currentColor, colors):
+         return false (Conflict found, graph is not bipartite)
+   b. If colors[neighbor] is equal to currentColor:
+      return false (Conflict found, graph is not bipartite)
+3. return true (No conflicts found, graph is bipartite)
+
+
+
+Q6/7. Algorithm to check whether given graph is biconnected or not
+1. Initialize the graph as an adjacency list.
+2. Call Articulation-Points(graph).
+3. The set or list returned by Articulation-Points contains the articulation points.
+
+Articulation-Points(graph)
+1. Initialize a global variable time to 0.
+2. Initialize an array discovery of length V (number of vertices) with all elements set to -1.
+3. Initialize an array low of length V with all elements set to infinity.
+4. Initialize an array isArticulation of length V with all elements set to false.
+5. Initialize a variable rootChildren to 0.
+6. Create an empty set or list to store the articulation points.
+7. For each vertex v in graph:
+   a. If discovery[v] is -1:
+      i. Call Articulation-DFS(graph, v, v, discovery, low, isArticulation, rootChildren, articulationPoints).
+8. Return the articulationPoints set or list containing articulation points.
+
+Articulation-DFS(graph, u, v, discovery, low, isArticulation, rootChildren, articulationPoints)
+1. Increment time by 1.
+2. Set discovery[u] and low[u] to time.
+3. For each neighbor w of u:
+   a. If discovery[w] is -1:
+      i. Call Articulation-DFS(graph, w, u, discovery, low, isArticulation, rootChildren, articulationPoints).
+      ii. Set low[u] to the minimum of low[u] and low[w].
+      iii. If low[w] ≥ discovery[u] and u is not the root:
+         1. Set isArticulation[u] to true.
+      iv. If u is the root and w is a child of u:
+         1. Increment rootChildren by 1.
+      v. If rootChildren > 1:
+         1. Set isArticulation[u] to true.
+   b. If w is not equal to the parent v:
+      i. Set low[u] to the minimum of low[u] and discovery[w].
+4. If isArticulation[u] is true:
+   a. Add u to the articulationPoints set or list.
+
+
+
+Q9. Algorithm to check whether the given graph can be colored with k color or not.
+
+1. Initialize the graph G as an adjacency list or adjacency matrix.
+2. Choose a value for k, the maximum number of colors.
+3. Call Chromatic-Number-Decision-Problem(G, k).
+4. If the result is "YES," there exists a valid coloring of G with at most k colors. If "NO," no such coloring exists.
+
+Chromatic-Number-Decision-Problem(G, k):
+1. Let V be the set of vertices of the graph G.
+2. Let colors[V] be an array to store the colors assigned to each vertex, initialized to -1 (no color).
+3. Call Chromatic-Number-Decision-Problem-Recursive(G, V, k, colors).
+
+Chromatic-Number-Decision-Problem-Recursive(G, V, k, colors):
+1. If V is empty:
+   a. Return "YES" (A valid coloring with at most k colors has been found).
+2. Pick a vertex v from V.
+3. For each color c from 1 to k:
+   a. Assign color c to vertex v.
+   b. Let V_adjacent be the set of vertices adjacent to v.
+   c. Remove v from V.
+   d. Call Chromatic-Number-Decision-Problem-Recursive(G, V, k, colors).
+   e. If the recursive call returns "YES," return "YES."
+4. If no valid coloring is found after trying all colors, backtrack:
+   a. Assign -1 (no color) to vertex v.
+   b. Add v back to V.
+5. Return "NO" (No valid coloring with at most k colors exists for the graph).
+
+
+
+Q9. Algorithm to check whether there exists an Hamiltonian Cycle or not.
+
+1. Initialize the graph as an adjacency list or adjacency matrix.
+2. Call Hamiltonian-Cycle(graph).
+3. If a Hamiltonian cycle is found, the algorithm returns the cycle. If no Hamiltonian cycle exists, it returns "No Hamiltonian cycle exists."
+
+Hamiltonian-Cycle(graph):
+1. Let n be the number of vertices in the graph.
+2. Create an array cycle of length n to store the Hamiltonian cycle.
+3. Initialize cycle with all elements set to -1 (indicating no vertices are visited).
+4. Set cycle[0] to 0 (start from the first vertex).
+5. If Hamiltonian-Cycle-Recursive(graph, cycle, 1), return cycle as the Hamiltonian cycle.
+6. If no Hamiltonian cycle is found, return "No Hamiltonian cycle exists."
+
+Hamiltonian-Cycle-Recursive(graph, cycle, pos):
+1. If pos is equal to the number of vertices n:
+   a. If there is an edge from the last vertex in cycle to the starting vertex (cycle[0]), return true (Hamiltonian cycle found).
+   b. Otherwise, return false (no Hamiltonian cycle).
+2. For each vertex v in the graph:
+   a. If v can be added to cycle at position pos:
+      i. Add v to cycle at position pos.
+      ii. Recursively call Hamiltonian-Cycle-Recursive with cycle and pos+1.
+      iii. If the recursive call returns true, return true.
+      iv. If the recursive call returns false, backtrack by removing v from cycle at position pos.
+3. Return false (no Hamiltonian cycle found).
+
+
+
+Q10. How 2SAT problem is P Class problem.
+
+1. Initialize the 2-SAT problem as a graph.
+2. Call TwoSAT(graph).
+3. If the result is "Unsatisfiable," there is no satisfying assignment.
+4. If the result is a set of variable assignments, it represents a satisfying assignment.
+
+TwoSAT(graph):
+1. Convert the 2-SAT problem into an implication graph with two vertices per variable (true and false).
+2. Add directed edges based on the implications of each clause, such as (¬A -> B) and (¬B -> A).
+3. Compute the strongly connected components (SCCs) of the implication graph.
+
+CheckUnsatisfiability:
+4. For each SCC:
+   a. If both a variable and its negation belong to the same SCC, return "Unsatisfiable."
+
+DetermineVariableAssignments:
+5. Create an array 'assignment' for variable assignments, initially set to None.
+6. Initialize an empty stack S.
+
+AssignTruthValues:
+7. For each SCC component C in a topological ordering of the SCCs:
+   a. If any variable in C already has a truth value, skip C.
+   b. For each variable v in C:
+      i. If v is assigned a truth value, continue.
+      ii. If v's negation is assigned the opposite truth value, return "Unsatisfiable."
+      iii. If v is not assigned a truth value:
+          1. Assign v the truth value 'true' and its negation the truth value 'false'.
+          2. Push v and ¬v onto stack S.
+
+8. Return the assignments from the 'assignment' array.
+
